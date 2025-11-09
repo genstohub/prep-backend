@@ -1,6 +1,7 @@
 const student = require("express").Router();
 const bcrypt = require("bcrypt");
 const db = require("../../database/db");
+const jwtAuth = require("../../middlewares/jwt");
 
 student.post("/create_account", async (req, res) => {
   const {
@@ -55,7 +56,10 @@ student.post("/create_account", async (req, res) => {
               })
               .returning("*")
               .then((studentDetails) => {
-                res.json({ ...credentials[0], ...studentDetails[0] });
+                let user = { ...credentials[0], ...studentDetails[0] };
+                const jwt = new jwtAuth().generatedAuthToken(user);
+                res.cookie("auth", jwt, { expires: "300d" });
+                res.json(user);
               })
               .finally(() => trx.commit(trx))
               .catch((err) => {
@@ -74,7 +78,5 @@ student.post("/create_account", async (req, res) => {
       });
   });
 });
-
-
 
 module.exports = student;

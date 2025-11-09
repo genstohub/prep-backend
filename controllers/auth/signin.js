@@ -1,6 +1,7 @@
 const signinRoute = require("express").Router();
 const db = require("../../database/db");
 const bcrypt = require("bcrypt");
+const jwtAuth = require("../../middlewares/jwt");
 
 signinRoute.post("/signin", async (req, res) => {
   const { email, phoneNumber, password } = req.body;
@@ -36,6 +37,8 @@ signinRoute.post("/signin", async (req, res) => {
               .where(searchHelper, searchValue)
               .join(tableToJoin, "users.user_id", `${tableToJoin}.user_id`)
               .then((user) => {
+                const jwt = new jwtAuth().generatedAuthToken(user[0])
+                res.cookie("auth", jwt);
                 res.json(user[0]);
               })
               .catch((err) => {
