@@ -9,6 +9,8 @@ const instructorUserRoute = require("../controllers/users/instructor");
 const studentUserRoute = require("../controllers/users/student");
 
 const signinRoute = require("../controllers/auth/signin");
+const signUpRoute = require("../controllers/auth/singup");
+const sessionRoute = require("../controllers/auth/session")
 
 router.use("/user/admin", adminUserRoute);
 router.use("/user/worker", workerUserRoute);
@@ -16,5 +18,7 @@ router.use("/user/instructor", instructorUserRoute);
 router.use("/user/student", studentUserRoute);
 
 router.use("/auth_sign", signinRoute);
+router.use("/auth_create", signUpRoute)
+router.use("/auth_session", sessionRoute);
 
 module.exports = router;

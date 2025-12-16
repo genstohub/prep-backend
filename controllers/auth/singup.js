@@ -1,9 +1,9 @@
-const student = require("express").Router();
+const signup = require("express").Router();
 const bcrypt = require("bcrypt");
 const db = require("../../database/db");
 const jwtAuth = require("../../middlewares/jwt");
 
-student.post("/create_account", async (req, res) => {
+signup.post("/create_account", async (req, res) => {
   const {
     firstName,
     lastName,
@@ -13,8 +13,7 @@ student.post("/create_account", async (req, res) => {
     country,
     password,
     school,
-    courseDepartment,
-    matricNo,
+    department,
   } = req.body; //Information provided by the new user is brought in to server with req.body;
   await db.transaction((trx) => {
     //***This is to register the user to the users database */
@@ -28,6 +27,8 @@ student.post("/create_account", async (req, res) => {
         role: "student",
         country: country,
         date_created: new Date(),
+        department: department,
+        school: school,
       })
       .returning("*")
       .then((credentials) => {
@@ -45,38 +46,28 @@ student.post("/create_account", async (req, res) => {
             hash: hash, // please make sure to replace the hash value with the hash defined above; password ---> hash
           })
           .returning("*")
-          .then((re) => {
-            //*** this transaction is to fill up the students table with the information provided */
-            trx("students")
-              .insert({
-                user_id: credentials[0].user_id,
-                school: school,
-                "course/department": courseDepartment,
-                matric_number: matricNo,
-              })
-              .returning("*")
-              .then((studentDetails) => {
-                let user = { ...credentials[0], ...studentDetails[0] };
-                const jwt = new jwtAuth().generatedAuthToken(user);
-                res.cookie("auth", jwt, { expires: "300d" });
-                res.json(user);
-              })
-              .finally(() => trx.commit(trx))
-              .catch((err) => {
-                res.status(400).json(err.detail);
-                trx.rollback();
-              });
+          .then((authDetials) => {
+            let user = credentials[0];
+            const jwt = new jwtAuth().generatedAuthToken(user);
+            res.cookie("auth", jwt);
+            res.status(200).json({
+              user, emailVerification: {
+              status: "sent"
+            }});
           })
+          .finally(() => trx.commit(trx))
           .catch((err) => {
+            console.log(err)
             res.status(400).json(err.detail);
             trx.rollback();
           });
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).json(err.detail);
         trx.rollback();
       });
   });
 });
 
-module.exports = student;
+module.exports = signup;
