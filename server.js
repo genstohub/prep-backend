@@ -7,13 +7,14 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://prep-center.vercel.app"],
+    origin: ["https://prep-center.vercel.app", "http://localhost:3000"],
   })
 );
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 
