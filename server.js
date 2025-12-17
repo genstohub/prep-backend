@@ -10,11 +10,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "https://prep-center.vercel.app",
-      "https://school-7f18.vercel.app",
-      "http://localhost:3000",
-    ],
+    origin: ["https://prep-center.vercel.app"],
   })
 );
 app.use(express.urlencoded({ extended: true }));
