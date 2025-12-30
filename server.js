@@ -7,21 +7,38 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(
-  cors({
-    credentials: true,
-    origin: [
-      "https://prep-center.vercel.app", // Your production domain
-      "https://school-7f18.vercel.app",
-      "http://school-7f18.vercel.app",
-      "http://prep-center.vercel.app",
-      "https://base4-zeta.vercel.app/",
-      "http://base4-zeta.vercel.app/",
-      "http://localhost:3000",
-      "https://localhost:3000", // for a local frontend
-    ],
-  })
-);
+const corsOptions = {
+  credentials: true,
+  origin: [
+    "https://prep-center.vercel.app",
+    "https://school-7f18.vercel.app",
+    "http://school-7f18.vercel.app",
+    "http://prep-center.vercel.app",
+    "https://base4-zeta.vercel.app",
+    "http://base4-zeta.vercel.app",
+    "http://localhost:3000",
+    "https://localhost:3000",
+  ],
+};
+
+app.use(cors(corsOptions));
+
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: [
+//       "https://prep-center.vercel.app", // Your production domain
+//       "https://school-7f18.vercel.app",
+//       "http://school-7f18.vercel.app",
+//       "http://prep-center.vercel.app",
+//       "https://base4-zeta.vercel.app/",
+//       "http://base4-zeta.vercel.app/",
+//       "http://localhost:3000",
+//       "https: //base4-zeta.vercel.app",
+//       "https://localhost:3000", // for a local frontend
+//     ],
+//   })
+// );
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
