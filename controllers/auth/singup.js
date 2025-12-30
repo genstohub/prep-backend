@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const db = require("../../database/db");
 const jwtAuth = require("../../middlewares/jwt");
 
-const maxAgeDuration = 300 * 24 * 60 * 60 * 1000; 
+const maxAgeDuration = 300 * 24 * 60 * 60 * 1000;
 
 signup.post("/create_account", async (req, res) => {
   const {
@@ -55,16 +55,18 @@ signup.post("/create_account", async (req, res) => {
               maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
               httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
               secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
-              sameSite: "Lax", // Recommended: helps mitigate CSRF attacks
+              sameSite: "none", // Recommended: helps mitigate CSRF attacks
             });
             res.status(200).json({
-              user, emailVerification: {
-              status: "sent"
-            }});
+              user,
+              emailVerification: {
+                status: "sent",
+              },
+            });
           })
           .finally(() => trx.commit(trx))
           .catch((err) => {
-            console.log(err)
+            console.log(err);
             res.status(400).json(err.detail);
             trx.rollback();
           });
