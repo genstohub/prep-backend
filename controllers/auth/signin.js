@@ -8,8 +8,8 @@ auth.post("/signin", async (req, res) => {
   await db("signin")
     .where("email", email)
     .select("hash")
-    .then((hash) => {
-      const isValid = bcrypt.compare(password, hash[0].hash);
+    .then(async(hash) => {
+      const isValid = await bcrypt.compare(password, hash[0].hash);
       if (isValid) {
         db("users")
           .where("email", email)

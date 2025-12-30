@@ -7,13 +7,20 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000"],
+    origin: [
+      "https://prep-center.vercel.app", // Your production domain
+      "https://school-7f18.vercel.app",
+      "http://school-7f18.vercel.app",
+      "http://prep-center.vercel.app",
+      "http://localhost:3000", // for a local frontend
+    ],
   })
 );
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -30,5 +37,3 @@ app.listen(port, () => {
 });
 
 // ""
-//     ?
-// /
