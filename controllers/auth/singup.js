@@ -49,7 +49,8 @@ signup.post("/create_account", async (req, res) => {
           .then((authDetials) => {
             let user = credentials[0];
             const jwt = new jwtAuth().generatedAuthToken(user);
-            res.cookie("auth", jwt);
+            const farFutureDate = 10 * 365 * 24 * 60 * 60 * 1000; // 10 years in milliseconds
+            res.cookie("auth", jwt, { maxAge: farFutureDate });
             res.status(200).json({
               user, emailVerification: {
               status: "sent"

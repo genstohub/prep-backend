@@ -16,7 +16,8 @@ auth.post("/signin", async (req, res) => {
           .select("*")
           .then((user) => {
             const jwt = new jwtAuth().generatedAuthToken(user[0]);
-            res.cookie("auth", jwt);
+             const farFutureDate = 10 * 365 * 24 * 60 * 60 * 1000; // 10 years in milliseconds
+             res.cookie("auth", jwt, { maxAge: farFutureDate });
             res.json(user[0]);
           })
           .catch((err) => {
