@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const db = require("../../database/db");
 const jwtAuth = require("../../middlewares/jwt");
 
+const maxAgeDuration = 300 * 24 * 60 * 60 * 1000; 
+
 signup.post("/create_account", async (req, res) => {
   const {
     firstName,
@@ -49,8 +51,12 @@ signup.post("/create_account", async (req, res) => {
           .then((authDetials) => {
             let user = credentials[0];
             const jwt = new jwtAuth().generatedAuthToken(user);
-            const farFutureDate = 10 * 365 * 24 * 60 * 60 * 1000; // 10 years in milliseconds
-            res.cookie("auth", jwt, { maxAge: farFutureDate });
+            res.cookie("auth", jwt, {
+              maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
+              httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
+              secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
+              sameSite: "Lax", // Recommended: helps mitigate CSRF attacks
+            });
             res.status(200).json({
               user, emailVerification: {
               status: "sent"

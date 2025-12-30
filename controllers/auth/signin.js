@@ -3,6 +3,8 @@ const db = require("../../database/db");
 const bcrypt = require("bcrypt");
 const jwtAuth = require("../../middlewares/jwt");
 
+const maxAgeDuration = 300 * 24 * 60 * 60 * 1000; 
+
 auth.post("/signin", async (req, res) => {
   const { email, password } = req.body;
   await db("signin")
@@ -16,8 +18,12 @@ auth.post("/signin", async (req, res) => {
           .select("*")
           .then((user) => {
             const jwt = new jwtAuth().generatedAuthToken(user[0]);
-             const farFutureDate = 10 * 365 * 24 * 60 * 60 * 1000; // 10 years in milliseconds
-             res.cookie("auth", jwt, { maxAge: farFutureDate });
+            res.cookie("auth", jwt, {
+              maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
+              httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
+               secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
+              sameSite: "Lax", // Recommended: helps mitigate CSRF attacks
+            });
             res.json(user[0]);
           })
           .catch((err) => {

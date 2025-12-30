@@ -32,7 +32,7 @@ class jwtAuth {
 
   generatedAuthToken(user) {
     const jwtAuthToken = jwt.sign(user, process.env.JWTAUTHSECRET, {
-      expiresIn: "1d",
+      expiresIn: "300d",
     });
     return jwtAuthToken;
   }
