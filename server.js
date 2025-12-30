@@ -15,7 +15,10 @@ app.use(
       "https://school-7f18.vercel.app",
       "http://school-7f18.vercel.app",
       "http://prep-center.vercel.app",
-      "http://localhost:3000", // for a local frontend
+      "https://base4-zeta.vercel.app/",
+      "http://base4-zeta.vercel.app/",
+      "http://localhost:3000",
+      "https://localhost:3000", // for a local frontend
     ],
   })
 );
