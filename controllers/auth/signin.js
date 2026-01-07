@@ -6,33 +6,33 @@ const jwtAuth = require("../../middlewares/jwt");
 const maxAgeDuration = 300 * 24 * 60 * 60 * 1000;
 
 auth.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
-  await db("signin")
-    .where("email", email)
-    .select("hash")
-    .then(async (hash) => {
-      const isValid = await bcrypt.compare(password, hash[0].hash);
-      if (isValid) {
-        db("users")
-          .where("email", email)
-          .select("*")
-          .then((user) => {
-            const jwt = new jwtAuth().generatedAuthToken(user[0]);
-            res.cookie("auth", jwt, {
-              maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
-              httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
-              secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
-              sameSite: "none", // Recommended: helps mitigate CSRF attacks
-            });
-            res.json(user[0]);
-          })
-          .catch((err) => {
-            res.status(400).json("something went wrong, try again later");
-          });
-      } else {
-        res.status(400).json("password incorrect");
-      }
-    });
+    const { email, password } = req.body;
+    await db("signin")
+        .where("email", email)
+        .select("hash")
+        .then(async hash => {
+            const isValid = await bcrypt.compare(password, hash[0].hash);
+            if (isValid) {
+                db("users")
+                    .where("email", email)
+                    .select("*")
+                    .then(user => {
+                        const jwt = new jwtAuth().generatedAuthToken(user[0]);
+                        res.cookie("auth", jwt, {
+                            maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
+                            httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
+                            secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
+                            sameSite: "none" // Recommended: helps mitigate CSRF attacks
+                        });
+                        res.json(user[0]);
+                    })
+                    .catch(err => {
+                        res.status(400).json({ err: "server error" });
+                    });
+            } else {
+                res.status(400).json({ err: "wrong credentials" });
+            }
+        });
 });
 
 // auth.post("/signin", async (req, res) => {
