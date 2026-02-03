@@ -27,8 +27,8 @@ app.use(cors(corsOptions));
 //     origin: [
 //       "https://prep-center.vercel.app", // Your production domain
 //       "https://school-7f18.vercel.app",
-//       "http://school-7f18.vercel.app",
 //       "http://prep-center.vercel.app",
+//       "http://school-7f18.vercel.app",
 //       "https://base4-zeta.vercel.app/",
 //       "http://base4-zeta.vercel.app/",
 //       "http://localhost:3000",

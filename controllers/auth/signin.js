@@ -18,11 +18,12 @@ auth.post("/signin", async (req, res) => {
                     .select("*")
                     .then(user => {
                         const jwt = new jwtAuth().generatedAuthToken(user[0]);
+                        const isProduction = process.env.NODE_ENV === "production";
                         res.cookie("auth", jwt, {
                             maxAge: maxAgeDuration, // Set the cookie expiration in milliseconds
                             httpOnly: true, // Recommended: makes the cookie inaccessible to client-side JavaScript
-                            secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
-                            sameSite: "none" // Recommended: helps mitigate CSRF attacks
+                            secure: isProduction, // Ensures cookie is only sent over HTTPS in production, // Recommended: ensures the cookie is only sent over HTTPS (in production)
+                            sameSite: isProduction? "none" : "lax" // Recommended: helps mitigate CSRF attacks
                         });
                         res.json(user[0]);
                     })
@@ -30,7 +31,7 @@ auth.post("/signin", async (req, res) => {
                         res.status(400).json({ err: "server error" });
                     });
             } else {
-                res.status(400).json({ err: "wrong credentials" });
+                res.json({ err: "wrong credentials" });
             }
         });
 });
