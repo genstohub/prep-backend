@@ -1,7 +1,7 @@
  
 const multer = require("multer");
 const path = require("path");
-const { avatarStorage, videoCourseStorage } = require("./store");
+const { avatarStorage, videoCourseStorage, materialImageStore } = require("./store");
 
 // defining file storage system using multer package
 // /** For Images */
@@ -24,6 +24,21 @@ const uploadAvatar = multer({
 }).single("image");
 
 
+const uploadMaterialImages = multer({
+  storage: materialImageStore,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB Limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Optional: Extra check to ensure only images are uploaded
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images are allowed!'), false);
+    }
+  }
+}).any();
+
 
 // /** For Videos */
 // MULTER storage middleware for videos
@@ -45,5 +60,6 @@ const uploadVideoCourse = multer({
 
 module.exports = {
   uploadAvatar,
-  uploadVideoCourse
+  uploadVideoCourse, 
+  uploadMaterialImages
 }

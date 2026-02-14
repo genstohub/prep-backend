@@ -13,6 +13,7 @@ const sessionRoute = require("../controllers/auth/session");
 const logoutRoute = require("../controllers/auth/logout");
 
 const courseRoute = require("../controllers/courses/courses.js");
+const courseMaterialRoute = require("../controllers/courses/courseMaterials.js")
 
 router.use("/user/admin", adminUserRoute);
 router.use("/user/worker", workerUserRoute);
@@ -25,5 +26,6 @@ router.use("/auth_session", sessionRoute);
 router.use("/auth_logout", logoutRoute)
 
 router.use("/courses", courseRoute);
+router.use("/courses/materials", courseMaterialRoute);
 
 module.exports = router;
